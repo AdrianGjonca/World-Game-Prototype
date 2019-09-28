@@ -4,7 +4,7 @@
     Dim screen(40, 40) As Char
     Dim tile(1024, 1024) As Char
     Dim world(2048, 2048) As Char
-
+    '█
     Dim tool As Char = "▓"
 
     Sub Render()
@@ -82,13 +82,21 @@
                     tile((playerX - 1) / 2, (playerY - 1) / 2) = tool
                 End If
             Case Is = "j"
-                tile((playerX - 1) / 2 - 1, (playerY - 1) / 2) = " "
+                If tile((playerX - 1) / 2 - 1, (playerY - 1) / 2) <> "█" Then
+                    tile((playerX - 1) / 2 - 1, (playerY - 1) / 2) = " "
+                End If
             Case Is = "l"
-                tile((playerX - 1) / 2 + 1, (playerY - 1) / 2) = " "
+                If tile((playerX - 1) / 2 + 1, (playerY - 1) / 2) <> "█" Then
+                    tile((playerX - 1) / 2 + 1, (playerY - 1) / 2) = " "
+                End If
             Case Is = "i"
-                tile((playerX - 1) / 2, (playerY - 1) / 2 + 1) = " "
+                If tile((playerX - 1) / 2, (playerY - 1) / 2 + 1) <> "█" Then
+                    tile((playerX - 1) / 2, (playerY - 1) / 2 + 1) = " "
+                End If
             Case Is = "k"
-                tile((playerX - 1) / 2, (playerY - 1) / 2 - 1) = " "
+                If tile((playerX - 1) / 2, (playerY - 1) / 2 - 1) <> "█" Then
+                    tile((playerX - 1) / 2, (playerY - 1) / 2 - 1) = " "
+                End If
         End Select
     End Sub
     Sub Main()
@@ -107,10 +115,69 @@ a:
                 tile(x, y) = " "
             Next
         Next
+        'Stone
         For x As Integer = 10 To 1000 Step 1
             For y As Integer = 10 To 1000 Step 1
-                If Int((2 * Rnd()) + 1) = "1" Then
-                    tile(x, y) = "▲"
+                'If Int((2 * Rnd()) + 1) = "1" Then
+                tile(x, y) = "▒"
+                'End If
+            Next
+        Next
+
+        'Caves
+        For x As Integer = 100 To 900 Step 1
+            For y As Integer = 100 To 900 Step 1
+                If Int((50 * Rnd()) + 1) = "1" Then
+                    Dim ax = 0
+                    Dim ay = 0
+                    While Int((8 * Rnd()) + 1) <> "1"
+                        tile(x + ax, y + ay) = " "
+                        If Int((3 * Rnd()) + 1) <> "1" Then
+                            tile(x + ax + 1, y + ay) = " "
+                        End If
+                        If Int((3 * Rnd()) + 1) <> "1" Then
+                            tile(x + ax - 1, y + ay) = " "
+                        End If
+                        If Int((3 * Rnd()) + 1) <> "1" Then
+                            tile(x + ax, y + ay + 1) = " "
+                        End If
+                        If Int((3 * Rnd()) + 1) <> "1" Then
+                            tile(x + ax, y + ay - 1) = " "
+                        End If
+
+                        If Int((3 * Rnd()) + 1) <> "1" Then
+                            ax += 1
+                        End If
+                        If Int((3 * Rnd()) + 1) <> "1" Then
+                            ax -= 1
+                        End If
+                        If Int((3 * Rnd()) + 1) <> "1" Then
+                            ay += 1
+                        End If
+                        If Int((3 * Rnd()) + 1) <> "1" Then
+                            ay -= 1
+                        End If
+                    End While
+                End If
+            Next
+        Next
+
+        'Dungeons
+        For x As Integer = 10 To 1000 Step 10
+            For y As Integer = 10 To 1000 Step 10
+                If Int((6 * Rnd()) + 1) = "1" Then
+                    For ax As Integer = 0 To 9
+                        For ay As Integer = 0 To 9
+                            tile(x + ax, y + ay) = " "
+                            If ax = 0 Or ax = 9 Then
+                                tile(x + ax, y + ay) = "█"
+                            ElseIf ay = 0 And ax <> 5 And ax <> 4 Then
+                                tile(x + ax, y + ay) = "█"
+                            ElseIf ay = 9 Then
+                                tile(x + ax, y + ay) = "█"
+                            End If
+                        Next
+                    Next
                 End If
             Next
         Next
