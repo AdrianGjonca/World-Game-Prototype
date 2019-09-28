@@ -76,9 +76,9 @@
                 End If
             Case Is = "l"
                 If world(playerX + 2, playerY) = " " Then
-                    world(playerX - 1 - 2, playerY + 1 + 2) = tool
+                    world(playerX - 1 - 2, playerY + 1 - 2) = tool
                     world(playerX - 2, playerY + 1 + 2) = tool
-                    world(playerX - 1 - 2, playerY + 2 + 2) = tool
+                    world(playerX - 1 - 2, playerY + 2 - 2) = tool
                     world(playerX - 2, playerY + 2 + 2) = tool
                 End If
             Case Is = "i"
