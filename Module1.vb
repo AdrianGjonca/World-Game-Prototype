@@ -8,6 +8,7 @@
     '█
     Dim tool As Char = "▓"
 
+
     Sub Render()
         'Clear Screan
         For x As Integer = 0 To 40
@@ -31,7 +32,6 @@
             For y As Integer = playerY - 40 To playerY + 40
                 Dim sx As Integer = x - playerX + 20
                 Dim sy As Integer = -y + playerY + 20
-
                 If sx > 0 And sx < 40 And sy > 0 And sy < 40 Then
                     screen(sx, sy) = world(x, y)
                 End If
@@ -87,28 +87,28 @@
                 End If
             Case Is = "j"
                 If tile((playerX - 1) / 2 - 1, (playerY - 1) / 2) <> "█" Then
-                    If tile((playerX - 1) / 2 - 1, (playerY - 1) / 2) = tool Then
+                    If tile((playerX - 1) / 2 - 1, (playerY - 1) / 2) = "░" Or tile((playerX - 1) / 2 - 1, (playerY - 1) / 2) = tool Then
                         iron += 1
                     End If
                     tile((playerX - 1) / 2 - 1, (playerY - 1) / 2) = " "
                 End If
             Case Is = "l"
                 If tile((playerX - 1) / 2 + 1, (playerY - 1) / 2) <> "█" Then
-                    If tile((playerX - 1) / 2 + 1, (playerY - 1) / 2) = tool Then
+                    If tile((playerX - 1) / 2 + 1, (playerY - 1) / 2) = "░" Or tile((playerX - 1) / 2 + 1, (playerY - 1) / 2) = tool Then
                         iron += 1
                     End If
                     tile((playerX - 1) / 2 + 1, (playerY - 1) / 2) = " "
                 End If
             Case Is = "i"
                 If tile((playerX - 1) / 2, (playerY - 1) / 2 + 1) <> "█" Then
-                    If tile((playerX - 1) / 2, (playerY - 1) / 2 + 1) = tool Then
+                    If tile((playerX - 1) / 2, (playerY - 1) / 2 + 1) = "░" Or tile((playerX - 1) / 2, (playerY - 1) / 2 + 1) = tool Then
                         iron += 1
                     End If
                     tile((playerX - 1) / 2, (playerY - 1) / 2 + 1) = " "
                 End If
             Case Is = "k"
                 If tile((playerX - 1) / 2, (playerY - 1) / 2 - 1) <> "█" Then
-                    If tile((playerX - 1) / 2, (playerY - 1) / 2 - 1) = tool Then
+                    If tile((playerX - 1) / 2, (playerY - 1) / 2 - 1) = "░" Or tile((playerX - 1) / 2, (playerY - 1) / 2 - 1) = tool Then
                         iron += 1
                     End If
                     tile((playerX - 1) / 2, (playerY - 1) / 2 - 1) = " "
@@ -185,18 +185,18 @@ a:
                     Dim ax = 0
                     Dim ay = 0
                     While Int((8 * Rnd()) + 1) <> "1"
-                        tile(x + ax, y + ay) = "▓"
+                        tile(x + ax, y + ay) = "░"
                         If Int((3 * Rnd()) + 1) <> "1" Then
-                            tile(x + ax + 1, y + ay) = "▓"
+                            tile(x + ax + 1, y + ay) = "░"
                         End If
                         If Int((3 * Rnd()) + 1) <> "1" Then
-                            tile(x + ax - 1, y + ay) = "▓"
+                            tile(x + ax - 1, y + ay) = "░"
                         End If
                         If Int((3 * Rnd()) + 1) <> "1" Then
-                            tile(x + ax, y + ay + 1) = "▓"
+                            tile(x + ax, y + ay + 1) = "░"
                         End If
                         If Int((3 * Rnd()) + 1) <> "1" Then
-                            tile(x + ax, y + ay - 1) = "▓"
+                            tile(x + ax, y + ay - 1) = "░"
                         End If
 
                         If Int((3 * Rnd()) + 1) <> "1" Then
