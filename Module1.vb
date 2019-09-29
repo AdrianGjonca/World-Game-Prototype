@@ -59,39 +59,51 @@
         Next
         Console.WriteLine(data)
         Console.WriteLine(playerX & " " & playerY & " Iron:" & iron & " Copper:" & copper)
+        Console.WriteLine("╔════════════════════╗")
+        Console.WriteLine("║1: door  ╬  C:5 I:6 ║")
+        Console.WriteLine("║2: table ╥  C:5 I:4 ║")
+        Console.WriteLine("╚════════════════════╝")
     End Sub
     Sub TakeTurn()
         Dim key As Char = Console.ReadKey.KeyChar
         Select Case key
             Case Is = "a"
-                If world(playerX - 3, playerY) = " " Then
+                If world(playerX - 3, playerY) = " " Or world(playerX - 3, playerY) = "╬" Then
                     playerX -= 2
                 End If
             Case Is = "d"
-                If world(playerX + 2, playerY) = " " Then
+                If world(playerX + 2, playerY) = " " Or world(playerX + 2, playerY) = "╬" Then
                     playerX += 2
                 End If
             Case Is = "w"
-                If world(playerX, playerY + 2) = " " Then
+                If world(playerX, playerY + 2) = " " Or world(playerX, playerY + 2) = "╬" Then
                     playerY += 2
                 End If
             Case Is = "s"
-                If world(playerX, playerY - 3) = " " Then
+                If world(playerX, playerY - 3) = " " Or world(playerX, playerY - 3) = "╬" Then
                     playerY -= 2
                 End If
+            Case Is = "1"
+                If iron >= 6 And copper >= 5 Then
+                    tile((playerX - 1) / 2, (playerY - 1) / 2) = "╬"
+                    iron -= 6
+                    copper -= 5
+                End If
+            Case Is = "2"
+                If iron >= 4 And copper >= 5 Then
+                    tile((playerX - 1) / 2, (playerY - 1) / 2) = "╥"
+                    iron -= 4
+                    copper -= 5
+                End If
             Case Is = " "
-                If tile((playerX - 1) / 2, (playerY - 1) / 2) = " " Then
-                    If iron > 0 Then
-                        tile((playerX - 1) / 2, (playerY - 1) / 2) = ironT
-                        iron -= 1
-                    End If
+                If iron > 0 Then
+                    tile((playerX - 1) / 2, (playerY - 1) / 2) = ironT
+                    iron -= 1
                 End If
             Case Is = Constants.vbBack
-                If tile((playerX - 1) / 2, (playerY - 1) / 2) = " " Then
-                    If copper > 0 Then
-                        tile((playerX - 1) / 2, (playerY - 1) / 2) = copperT
-                        copper -= 1
-                    End If
+                If copper > 0 Then
+                    tile((playerX - 1) / 2, (playerY - 1) / 2) = copperT
+                    copper -= 1
                 End If
             Case Is = "j"
                 If tile((playerX - 1) / 2 - 1, (playerY - 1) / 2) <> "█" Then
