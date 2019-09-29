@@ -1,6 +1,7 @@
 ﻿Module Module1
     Dim playerX As Integer = 0
     Dim playerY As Integer = 0
+    Dim iron As Integer = 0
     Dim screen(40, 40) As Char
     Dim tile(1024, 1024) As Char
     Dim world(2048, 2048) As Char
@@ -56,7 +57,7 @@
             data &= vbCrLf
         Next
         Console.WriteLine(data)
-        Console.WriteLine(playerX & " " & playerY)
+        Console.WriteLine(playerX & " " & playerY & " Iron:" & iron)
     End Sub
     Sub TakeTurn()
         Dim key As Char = Console.ReadKey.KeyChar
@@ -79,30 +80,45 @@
                 End If
             Case Is = " "
                 If tile((playerX - 1) / 2, (playerY - 1) / 2) = " " Then
-                    tile((playerX - 1) / 2, (playerY - 1) / 2) = tool
+                    If iron > 0 Then
+                        tile((playerX - 1) / 2, (playerY - 1) / 2) = tool
+                        iron -= 1
+                    End If
                 End If
             Case Is = "j"
                 If tile((playerX - 1) / 2 - 1, (playerY - 1) / 2) <> "█" Then
+                    If tile((playerX - 1) / 2 - 1, (playerY - 1) / 2) = tool Then
+                        iron += 1
+                    End If
                     tile((playerX - 1) / 2 - 1, (playerY - 1) / 2) = " "
                 End If
             Case Is = "l"
                 If tile((playerX - 1) / 2 + 1, (playerY - 1) / 2) <> "█" Then
+                    If tile((playerX - 1) / 2 + 1, (playerY - 1) / 2) = tool Then
+                        iron += 1
+                    End If
                     tile((playerX - 1) / 2 + 1, (playerY - 1) / 2) = " "
                 End If
             Case Is = "i"
                 If tile((playerX - 1) / 2, (playerY - 1) / 2 + 1) <> "█" Then
+                    If tile((playerX - 1) / 2, (playerY - 1) / 2 + 1) = tool Then
+                        iron += 1
+                    End If
                     tile((playerX - 1) / 2, (playerY - 1) / 2 + 1) = " "
                 End If
             Case Is = "k"
                 If tile((playerX - 1) / 2, (playerY - 1) / 2 - 1) <> "█" Then
+                    If tile((playerX - 1) / 2, (playerY - 1) / 2 - 1) = tool Then
+                        iron += 1
+                    End If
                     tile((playerX - 1) / 2, (playerY - 1) / 2 - 1) = " "
                 End If
         End Select
     End Sub
     Sub Main()
         WorldGen()
-        playerY = 491
-        playerX = 491
+        playerY = 1025
+        playerX = 1025
 a:
         Render()
         TakeTurn()
@@ -162,24 +178,57 @@ a:
             Next
         Next
 
-        'Dungeons
-        For x As Integer = 10 To 1000 Step 10
-            For y As Integer = 10 To 1000 Step 10
-                If Int((6 * Rnd()) + 1) = "1" Then
-                    For ax As Integer = 0 To 9
-                        For ay As Integer = 0 To 9
-                            tile(x + ax, y + ay) = " "
-                            If ax = 0 Or ax = 9 Then
-                                tile(x + ax, y + ay) = "█"
-                            ElseIf ay = 0 And ax <> 5 And ax <> 4 Then
-                                tile(x + ax, y + ay) = "█"
-                            ElseIf ay = 9 Then
-                                tile(x + ax, y + ay) = "█"
-                            End If
-                        Next
-                    Next
+        'Ores
+        For x As Integer = 100 To 900 Step 1
+            For y As Integer = 100 To 900 Step 1
+                If Int((800 * Rnd()) + 1) = "3" Then
+                    Dim ax = 0
+                    Dim ay = 0
+                    While Int((8 * Rnd()) + 1) <> "1"
+                        tile(x + ax, y + ay) = "▓"
+                        If Int((3 * Rnd()) + 1) <> "1" Then
+                            tile(x + ax + 1, y + ay) = "▓"
+                        End If
+                        If Int((3 * Rnd()) + 1) <> "1" Then
+                            tile(x + ax - 1, y + ay) = "▓"
+                        End If
+                        If Int((3 * Rnd()) + 1) <> "1" Then
+                            tile(x + ax, y + ay + 1) = "▓"
+                        End If
+                        If Int((3 * Rnd()) + 1) <> "1" Then
+                            tile(x + ax, y + ay - 1) = "▓"
+                        End If
+
+                        If Int((3 * Rnd()) + 1) <> "1" Then
+                            ax += 1
+                        End If
+                        If Int((3 * Rnd()) + 1) <> "1" Then
+                            ax -= 1
+                        End If
+                        If Int((3 * Rnd()) + 1) <> "1" Then
+                            ay += 1
+                        End If
+                        If Int((3 * Rnd()) + 1) <> "1" Then
+                            ay -= 1
+                        End If
+                    End While
                 End If
             Next
         Next
+
+        'House
+        For ax As Integer = 0 To 9
+            For ay As Integer = 0 To 9
+                tile(508 + ax, 508 + ay) = " "
+                If ax = 0 Or ax = 9 Then
+                    tile(508 + ax, 508 + ay) = "▓"
+                ElseIf ay = 0 And ax <> 5 And ax <> 4 Then
+                    tile(508 + ax, 508 + ay) = "▓"
+                ElseIf ay = 9 Then
+                    tile(508 + ax, 508 + ay) = "▓"
+                End If
+            Next
+        Next
+
     End Sub
 End Module
