@@ -2,12 +2,13 @@
     Dim playerX As Integer = 0
     Dim playerY As Integer = 0
     Dim iron As Integer = 0
+    Dim copper As Integer = 0
     Dim screen(40, 40) As Char
     Dim tile(1024, 1024) As Char
     Dim world(2048, 2048) As Char
     '█
-    Dim tool As Char = "▓"
-
+    Dim ironT As Char = "▓"
+    Dim copperT As Char = "░"
 
     Sub Render()
         'Clear Screan
@@ -57,7 +58,7 @@
             data &= vbCrLf
         Next
         Console.WriteLine(data)
-        Console.WriteLine(playerX & " " & playerY & " Iron:" & iron)
+        Console.WriteLine(playerX & " " & playerY & " Iron:" & iron & " Copper:" & copper)
     End Sub
     Sub TakeTurn()
         Dim key As Char = Console.ReadKey.KeyChar
@@ -81,35 +82,54 @@
             Case Is = " "
                 If tile((playerX - 1) / 2, (playerY - 1) / 2) = " " Then
                     If iron > 0 Then
-                        tile((playerX - 1) / 2, (playerY - 1) / 2) = tool
+                        tile((playerX - 1) / 2, (playerY - 1) / 2) = ironT
                         iron -= 1
+                    End If
+                End If
+            Case Is = Constants.vbBack
+                If tile((playerX - 1) / 2, (playerY - 1) / 2) = " " Then
+                    If copper > 0 Then
+                        tile((playerX - 1) / 2, (playerY - 1) / 2) = copperT
+                        copper -= 1
                     End If
                 End If
             Case Is = "j"
                 If tile((playerX - 1) / 2 - 1, (playerY - 1) / 2) <> "█" Then
-                    If tile((playerX - 1) / 2 - 1, (playerY - 1) / 2) = "░" Or tile((playerX - 1) / 2 - 1, (playerY - 1) / 2) = tool Then
+                    If tile((playerX - 1) / 2 - 1, (playerY - 1) / 2) = ironT Then
                         iron += 1
+                    End If
+                    If tile((playerX - 1) / 2 - 1, (playerY - 1) / 2) = copperT Then
+                        copper += 1
                     End If
                     tile((playerX - 1) / 2 - 1, (playerY - 1) / 2) = " "
                 End If
             Case Is = "l"
                 If tile((playerX - 1) / 2 + 1, (playerY - 1) / 2) <> "█" Then
-                    If tile((playerX - 1) / 2 + 1, (playerY - 1) / 2) = "░" Or tile((playerX - 1) / 2 + 1, (playerY - 1) / 2) = tool Then
+                    If tile((playerX - 1) / 2 + 1, (playerY - 1) / 2) = ironT Then
                         iron += 1
+                    End If
+                    If tile((playerX - 1) / 2 + 1, (playerY - 1) / 2) = copperT Then
+                        copper += 1
                     End If
                     tile((playerX - 1) / 2 + 1, (playerY - 1) / 2) = " "
                 End If
             Case Is = "i"
                 If tile((playerX - 1) / 2, (playerY - 1) / 2 + 1) <> "█" Then
-                    If tile((playerX - 1) / 2, (playerY - 1) / 2 + 1) = "░" Or tile((playerX - 1) / 2, (playerY - 1) / 2 + 1) = tool Then
+                    If tile((playerX - 1) / 2, (playerY - 1) / 2 + 1) = ironT Then
                         iron += 1
+                    End If
+                    If tile((playerX - 1) / 2, (playerY - 1) / 2 + 1) = copperT Then
+                        copper += 1
                     End If
                     tile((playerX - 1) / 2, (playerY - 1) / 2 + 1) = " "
                 End If
             Case Is = "k"
                 If tile((playerX - 1) / 2, (playerY - 1) / 2 - 1) <> "█" Then
-                    If tile((playerX - 1) / 2, (playerY - 1) / 2 - 1) = "░" Or tile((playerX - 1) / 2, (playerY - 1) / 2 - 1) = tool Then
+                    If tile((playerX - 1) / 2, (playerY - 1) / 2 - 1) = ironT Then
                         iron += 1
+                    End If
+                    If tile((playerX - 1) / 2, (playerY - 1) / 2 - 1) = copperT Then
+                        copper += 1
                     End If
                     tile((playerX - 1) / 2, (playerY - 1) / 2 - 1) = " "
                 End If
@@ -185,18 +205,54 @@ a:
                     Dim ax = 0
                     Dim ay = 0
                     While Int((8 * Rnd()) + 1) <> "1"
-                        tile(x + ax, y + ay) = "░"
+                        tile(x + ax, y + ay) = ironT
                         If Int((3 * Rnd()) + 1) <> "1" Then
-                            tile(x + ax + 1, y + ay) = "░"
+                            tile(x + ax + 1, y + ay) = ironT
                         End If
                         If Int((3 * Rnd()) + 1) <> "1" Then
-                            tile(x + ax - 1, y + ay) = "░"
+                            tile(x + ax - 1, y + ay) = ironT
                         End If
                         If Int((3 * Rnd()) + 1) <> "1" Then
-                            tile(x + ax, y + ay + 1) = "░"
+                            tile(x + ax, y + ay + 1) = ironT
                         End If
                         If Int((3 * Rnd()) + 1) <> "1" Then
-                            tile(x + ax, y + ay - 1) = "░"
+                            tile(x + ax, y + ay - 1) = ironT
+                        End If
+
+                        If Int((3 * Rnd()) + 1) <> "1" Then
+                            ax += 1
+                        End If
+                        If Int((3 * Rnd()) + 1) <> "1" Then
+                            ax -= 1
+                        End If
+                        If Int((3 * Rnd()) + 1) <> "1" Then
+                            ay += 1
+                        End If
+                        If Int((3 * Rnd()) + 1) <> "1" Then
+                            ay -= 1
+                        End If
+                    End While
+                End If
+            Next
+        Next
+        For x As Integer = 100 To 900 Step 1
+            For y As Integer = 100 To 900 Step 1
+                If Int((800 * Rnd()) + 1) = "3" Then
+                    Dim ax = 0
+                    Dim ay = 0
+                    While Int((8 * Rnd()) + 1) <> "1"
+                        tile(x + ax, y + ay) = copperT
+                        If Int((3 * Rnd()) + 1) <> "1" Then
+                            tile(x + ax + 1, y + ay) = copperT
+                        End If
+                        If Int((3 * Rnd()) + 1) <> "1" Then
+                            tile(x + ax - 1, y + ay) = copperT
+                        End If
+                        If Int((3 * Rnd()) + 1) <> "1" Then
+                            tile(x + ax, y + ay + 1) = copperT
+                        End If
+                        If Int((3 * Rnd()) + 1) <> "1" Then
+                            tile(x + ax, y + ay - 1) = copperT
                         End If
 
                         If Int((3 * Rnd()) + 1) <> "1" Then
