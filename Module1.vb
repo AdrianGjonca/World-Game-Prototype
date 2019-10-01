@@ -1,11 +1,16 @@
-﻿Module Module1
+Module Module1
     Dim playerX As Integer = 0
     Dim playerY As Integer = 0
     Dim iron As Integer = 0
     Dim copper As Integer = 0
     Dim screen(40, 40) As Char
+    Dim tileU(1024, 1024) As Char
+    Dim tileO(1024, 1024) As Char
     Dim tile(1024, 1024) As Char
     Dim world(2048, 2048) As Char
+
+    Dim level As Boolean = False
+
     '█
     Dim ironT As Char = "▓"
     Dim copperT As Char = "░"
@@ -59,6 +64,7 @@
         Next
         Console.WriteLine(data)
         Console.WriteLine(playerX & " " & playerY & " Iron:" & iron & " Copper:" & copper)
+        Console.WriteLine(level)
         Console.WriteLine("╔════════════════════╗")
         Console.WriteLine("║1: door  ╬  C:5 I:6 ║")
         Console.WriteLine("║2: table ╥  C:5 I:4 ║")
@@ -145,6 +151,8 @@
                     End If
                     tile((playerX - 1) / 2, (playerY - 1) / 2 - 1) = " "
                 End If
+            Case Is = "e"
+                level = Not level
         End Select
     End Sub
     Sub Main()
@@ -187,25 +195,40 @@ b:
         GoTo b
 c:
         WorldGen()
+        tile = tileU
         playerY = 1025
         playerX = 1025
 a:
         Render()
         TakeTurn()
+        If Not level Then
+            tile = tileU
+        Else
+            tile = tileO
+        End If
+        If Not level Then
+            tileU = tile
+        Else
+            tileO = tile
+        End If
         GoTo a
     End Sub
 
     Sub WorldGen()
+
+
+
+        ''''''Caves
         For x As Integer = 0 To 1024
             For y As Integer = 0 To 1024
-                tile(x, y) = " "
+                tileU(x, y) = " "
             Next
         Next
         'Stone
         For x As Integer = 10 To 1000 Step 1
             For y As Integer = 10 To 1000 Step 1
                 'If Int((2 * Rnd()) + 1) = "1" Then
-                tile(x, y) = "▒"
+                tileU(x, y) = "▒"
                 'End If
             Next
         Next
@@ -217,18 +240,18 @@ a:
                     Dim ax = 0
                     Dim ay = 0
                     While Int((8 * Rnd()) + 1) <> "1"
-                        tile(x + ax, y + ay) = " "
+                        tileU(x + ax, y + ay) = " "
                         If Int((3 * Rnd()) + 1) <> "1" Then
-                            tile(x + ax + 1, y + ay) = " "
+                            tileU(x + ax + 1, y + ay) = " "
                         End If
                         If Int((3 * Rnd()) + 1) <> "1" Then
-                            tile(x + ax - 1, y + ay) = " "
+                            tileU(x + ax - 1, y + ay) = " "
                         End If
                         If Int((3 * Rnd()) + 1) <> "1" Then
-                            tile(x + ax, y + ay + 1) = " "
+                            tileU(x + ax, y + ay + 1) = " "
                         End If
                         If Int((3 * Rnd()) + 1) <> "1" Then
-                            tile(x + ax, y + ay - 1) = " "
+                            tileU(x + ax, y + ay - 1) = " "
                         End If
 
                         If Int((3 * Rnd()) + 1) <> "1" Then
@@ -255,18 +278,18 @@ a:
                     Dim ax = 0
                     Dim ay = 0
                     While Int((8 * Rnd()) + 1) <> "1"
-                        tile(x + ax, y + ay) = ironT
+                        tileU(x + ax, y + ay) = ironT
                         If Int((3 * Rnd()) + 1) <> "1" Then
-                            tile(x + ax + 1, y + ay) = ironT
+                            tileU(x + ax + 1, y + ay) = ironT
                         End If
                         If Int((3 * Rnd()) + 1) <> "1" Then
-                            tile(x + ax - 1, y + ay) = ironT
+                            tileU(x + ax - 1, y + ay) = ironT
                         End If
                         If Int((3 * Rnd()) + 1) <> "1" Then
-                            tile(x + ax, y + ay + 1) = ironT
+                            tileU(x + ax, y + ay + 1) = ironT
                         End If
                         If Int((3 * Rnd()) + 1) <> "1" Then
-                            tile(x + ax, y + ay - 1) = ironT
+                            tileU(x + ax, y + ay - 1) = ironT
                         End If
 
                         If Int((3 * Rnd()) + 1) <> "1" Then
@@ -291,18 +314,18 @@ a:
                     Dim ax = 0
                     Dim ay = 0
                     While Int((8 * Rnd()) + 1) <> "1"
-                        tile(x + ax, y + ay) = copperT
+                        tileU(x + ax, y + ay) = copperT
                         If Int((3 * Rnd()) + 1) <> "1" Then
-                            tile(x + ax + 1, y + ay) = copperT
+                            tileU(x + ax + 1, y + ay) = copperT
                         End If
                         If Int((3 * Rnd()) + 1) <> "1" Then
-                            tile(x + ax - 1, y + ay) = copperT
+                            tileU(x + ax - 1, y + ay) = copperT
                         End If
                         If Int((3 * Rnd()) + 1) <> "1" Then
-                            tile(x + ax, y + ay + 1) = copperT
+                            tileU(x + ax, y + ay + 1) = copperT
                         End If
                         If Int((3 * Rnd()) + 1) <> "1" Then
-                            tile(x + ax, y + ay - 1) = copperT
+                            tileU(x + ax, y + ay - 1) = copperT
                         End If
 
                         If Int((3 * Rnd()) + 1) <> "1" Then
@@ -325,16 +348,75 @@ a:
         'House
         For ax As Integer = 0 To 9
             For ay As Integer = 0 To 9
-                tile(508 + ax, 508 + ay) = " "
+                tileU(508 + ax, 508 + ay) = " "
                 If ax = 0 Or ax = 9 Then
-                    tile(508 + ax, 508 + ay) = "▓"
+                    tileU(508 + ax, 508 + ay) = "▓"
                 ElseIf ay = 0 And ax <> 5 And ax <> 4 Then
-                    tile(508 + ax, 508 + ay) = "▓"
+                    tileU(508 + ax, 508 + ay) = "▓"
                 ElseIf ay = 9 Then
-                    tile(508 + ax, 508 + ay) = "▓"
+                    tileU(508 + ax, 508 + ay) = "▓"
                 End If
             Next
         Next
 
+
+
+
+        ''''''World
+        For x As Integer = 0 To 1024
+            For y As Integer = 0 To 1024
+                tileO(x, y) = "T"
+            Next
+        Next
+        'Clearings
+        For x As Integer = 100 To 900 Step 1
+            For y As Integer = 100 To 900 Step 1
+                If Int((50 * Rnd()) + 1) = "1" Then
+                    Dim ax = 0
+                    Dim ay = 0
+                    While Int((20 * Rnd()) + 1) <> "1"
+                        tileO(x + ax, y + ay) = " "
+                        If Int((3 * Rnd()) + 1) <> "1" Then
+                            tileO(x + ax + 1, y + ay) = " "
+                        End If
+                        If Int((3 * Rnd()) + 1) <> "1" Then
+                            tileO(x + ax - 1, y + ay) = " "
+                        End If
+                        If Int((3 * Rnd()) + 1) <> "1" Then
+                            tileO(x + ax, y + ay + 1) = " "
+                        End If
+                        If Int((3 * Rnd()) + 1) <> "1" Then
+                            tileO(x + ax, y + ay - 1) = " "
+                        End If
+
+                        If Int((3 * Rnd()) + 1) <> "1" Then
+                            ax += 1
+                        End If
+                        If Int((3 * Rnd()) + 1) <> "1" Then
+                            ax -= 1
+                        End If
+                        If Int((3 * Rnd()) + 1) <> "1" Then
+                            ay += 1
+                        End If
+                        If Int((3 * Rnd()) + 1) <> "1" Then
+                            ay -= 1
+                        End If
+                    End While
+                End If
+            Next
+        Next
+        'House
+        For ax As Integer = 0 To 9
+            For ay As Integer = 0 To 9
+                tileO(508 + ax, 508 + ay) = " "
+                If ax = 0 Or ax = 9 Then
+                    tileO(508 + ax, 508 + ay) = "▓"
+                ElseIf ay = 0 And ax <> 5 And ax <> 4 Then
+                    tileO(508 + ax, 508 + ay) = "▓"
+                ElseIf ay = 9 Then
+                    tileO(508 + ax, 508 + ay) = "▓"
+                End If
+            Next
+        Next
     End Sub
 End Module
