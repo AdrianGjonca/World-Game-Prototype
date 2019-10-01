@@ -11,6 +11,14 @@ Module Module1
     Dim tile(1024, 1024) As Char
     Dim world(2048, 2048) As Char
 
+    Public Class entitiy
+        Public x As Integer
+        Public y As Integer
+        Public life As Integer = 0
+    End Class
+
+    Dim entities As List(Of entitiy) = New List(Of entitiy)
+
     Dim level As Boolean = True
 
     '█
@@ -18,7 +26,7 @@ Module Module1
     Dim copperT As Char = "░"
     Dim woodT As Char = "♣"
 
-    Dim spawnerT As Char = "□"
+    Dim spawnerT As Char = "▲"
 
     Sub Render()
         'Clear Screan
@@ -38,6 +46,12 @@ Module Module1
             Next
         Next
 
+        For Each creature As entitiy In entities
+            world(creature.x, creature.y) = "M"
+            world(creature.x + 1, creature.y) = "M"
+            world(creature.x, creature.y + 1) = "M"
+            world(creature.x + 1, creature.y + 1) = "M"
+        Next
         'Draw World
         For x As Integer = playerX - 40 To playerX + 40
             For y As Integer = playerY - 40 To playerY + 40
@@ -240,12 +254,15 @@ b:
         GoTo b
 c:
         WorldGen()
+        'entities.Add(New entitiy)
         tile = tileU
         playerY = 1025
         playerX = 1025
 a:
+        '''''Main Loop
         Render()
         TakeTurn()
+        Zombify()
         If Not level Then
             tile = tileU
         Else
@@ -256,7 +273,53 @@ a:
         Else
             tileO = tile
         End If
+        ''''''End of Main loop
         GoTo a
+    End Sub
+
+    Sub Zombify()
+        Dim remove As List(Of entitiy) = New List(Of entitiy)
+        For Each creature As entitiy In entities
+            ''''Ai Start
+            Dim bestX As Integer = 0
+            Dim bestY As Integer = 0
+            If playerX < creature.x Then
+                bestX -= 2
+            End If
+            If playerX > creature.x Then
+                bestX += 2
+            End If
+            If playerY < creature.y Then
+                bestY -= 2
+            End If
+            If playerY > creature.y Then
+                bestY += 2
+            End If
+            If tile((creature.x + bestX) / 2, (creature.y + bestY) / 2) = " " Or tile((creature.x + bestX) / 2, (creature.y + bestY) / 2) = "%" Then
+                creature.x += bestX
+                creature.y += bestY
+            End If
+            ''''Ai End
+            creature.life += 1
+            If creature.life > 500 Then
+                remove.Add(creature)
+            End If
+        Next
+        For Each creature As entitiy In remove
+            entities.Remove(creature)
+        Next
+        If Int((10 * Rnd()) + 1) = "1" Then
+            For x As Integer = (playerX / 2) - 40 To (playerX / 2) + 40
+                For y As Integer = (playerY / 2) - 40 To (playerY / 2) + 40
+                    If tile(x, y) = spawnerT Then
+                        Dim z As New entitiy
+                        z.x = x * 2
+                        z.y = y * 2
+                        entities.Add(z)
+                    End If
+                Next
+            Next
+        End If
     End Sub
 
     Sub WorldGen()
@@ -447,6 +510,15 @@ a:
                             ay -= 1
                         End If
                     End While
+                End If
+            Next
+        Next
+
+        'Spawner
+        For x As Integer = 0 To 900
+            For y As Integer = 0 To 900
+                If Int((500 * Rnd()) + 1) = "1" Then
+                    tileO(x, y) = spawnerT
                 End If
             Next
         Next
