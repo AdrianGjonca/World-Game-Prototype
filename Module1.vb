@@ -3,17 +3,22 @@ Module Module1
     Dim playerY As Integer = 0
     Dim iron As Integer = 0
     Dim copper As Integer = 0
+    Dim wood As Integer = 0
+    Dim stone As Integer = 0
     Dim screen(40, 40) As Char
     Dim tileU(1024, 1024) As Char
     Dim tileO(1024, 1024) As Char
     Dim tile(1024, 1024) As Char
     Dim world(2048, 2048) As Char
 
-    Dim level As Boolean = False
+    Dim level As Boolean = True
 
     '█
     Dim ironT As Char = "▓"
     Dim copperT As Char = "░"
+    Dim woodT As Char = "♣"
+
+    Dim spawnerT As Char = "□"
 
     Sub Render()
         'Clear Screan
@@ -48,10 +53,10 @@ Module Module1
         'Draw Player
         '¶⁋
         '<>
-        screen(19, 20) = "¶"
-        screen(20, 20) = "⁋"
-        screen(19, 21) = "<"
-        screen(20, 21) = ">"
+        screen(19, 20) = "☺"
+        screen(20, 20) = "%"
+        screen(19, 21) = "║"
+        screen(20, 21) = " "
 
         'Draw Screen
         Dim data As String = ""
@@ -63,12 +68,18 @@ Module Module1
             data &= vbCrLf
         Next
         Console.WriteLine(data)
-        Console.WriteLine(playerX & " " & playerY & " Iron:" & iron & " Copper:" & copper)
-        Console.WriteLine(level)
         Console.WriteLine("╔════════════════════╗")
+        Console.WriteLine("║Iron:" & iron)
+        Console.WriteLine("║Copper: " & copper)
+        Console.WriteLine("║Wood:" & wood)
+        Console.WriteLine("║Stone:" & stone)
+        Console.WriteLine("╠════════════════════╣")
         Console.WriteLine("║1: door  ╬  C:5 I:6 ║")
         Console.WriteLine("║2: table ╥  C:5 I:4 ║")
         Console.WriteLine("╚════════════════════╝")
+        'Console.WriteLine(playerX & " " & playerY)
+        Console.CursorLeft = 0
+        Console.CursorTop = 0
     End Sub
     Sub TakeTurn()
         Dim key As Char = Console.ReadKey.KeyChar
@@ -110,6 +121,16 @@ Module Module1
                 If copper > 0 Then
                     tile((playerX - 1) / 2, (playerY - 1) / 2) = copperT
                     copper -= 1
+                End If '▒
+            Case Is = "+"
+                If stone > 0 Then
+                    tile((playerX - 1) / 2, (playerY - 1) / 2) = "▒"
+                    stone -= 1
+                End If
+            Case Is = "-"
+                If wood > 0 Then
+                    tile((playerX - 1) / 2, (playerY - 1) / 2) = woodT
+                    stone -= 1
                 End If
             Case Is = "j"
                 If tile((playerX - 1) / 2 - 1, (playerY - 1) / 2) <> "█" Then
@@ -118,6 +139,12 @@ Module Module1
                     End If
                     If tile((playerX - 1) / 2 - 1, (playerY - 1) / 2) = copperT Then
                         copper += 1
+                    End If
+                    If tile((playerX - 1) / 2 - 1, (playerY - 1) / 2) = woodT Then
+                        wood += 1
+                    End If
+                    If tile((playerX - 1) / 2 - 1, (playerY - 1) / 2) = "▒" Then
+                        stone += 1
                     End If
                     tile((playerX - 1) / 2 - 1, (playerY - 1) / 2) = " "
                 End If
@@ -129,6 +156,12 @@ Module Module1
                     If tile((playerX - 1) / 2 + 1, (playerY - 1) / 2) = copperT Then
                         copper += 1
                     End If
+                    If tile((playerX - 1) / 2 + 1, (playerY - 1) / 2) = woodT Then
+                        wood += 1
+                    End If
+                    If tile((playerX - 1) / 2 + 1, (playerY - 1) / 2) = "▒" Then
+                        stone += 1
+                    End If
                     tile((playerX - 1) / 2 + 1, (playerY - 1) / 2) = " "
                 End If
             Case Is = "i"
@@ -139,6 +172,12 @@ Module Module1
                     If tile((playerX - 1) / 2, (playerY - 1) / 2 + 1) = copperT Then
                         copper += 1
                     End If
+                    If tile((playerX - 1) / 2, (playerY - 1) / 2 + 1) = woodT Then
+                        wood += 1
+                    End If
+                    If tile((playerX - 1) / 2, (playerY - 1) / 2 + 1) = "▒" Then
+                        stone += 1
+                    End If
                     tile((playerX - 1) / 2, (playerY - 1) / 2 + 1) = " "
                 End If
             Case Is = "k"
@@ -148,6 +187,12 @@ Module Module1
                     End If
                     If tile((playerX - 1) / 2, (playerY - 1) / 2 - 1) = copperT Then
                         copper += 1
+                    End If
+                    If tile((playerX - 1) / 2, (playerY - 1) / 2 - 1) = woodT Then
+                        wood += 1
+                    End If
+                    If tile((playerX - 1) / 2, (playerY - 1) / 2 - 1) = "▒" Then
+                        stone += 1
                     End If
                     tile((playerX - 1) / 2, (playerY - 1) / 2 - 1) = " "
                 End If
@@ -365,7 +410,7 @@ a:
         ''''''World
         For x As Integer = 0 To 1024
             For y As Integer = 0 To 1024
-                tileO(x, y) = "T"
+                tileO(x, y) = woodT
             Next
         Next
         'Clearings
