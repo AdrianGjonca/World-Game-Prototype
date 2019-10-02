@@ -1,6 +1,7 @@
 Module Module1
     Dim playerX As Integer = 0
     Dim playerY As Integer = 0
+    Dim health As Integer = 10
     Dim iron As Integer = 0
     Dim copper As Integer = 0
     Dim wood As Integer = 0
@@ -46,12 +47,14 @@ Module Module1
             Next
         Next
 
-        For Each creature As entitiy In entities
-            world(creature.x, creature.y) = "M"
-            world(creature.x + 1, creature.y) = "M"
-            world(creature.x, creature.y + 1) = "M"
-            world(creature.x + 1, creature.y + 1) = "M"
-        Next
+        If level Then
+            For Each creature As entitiy In entities
+                world(creature.x, creature.y) = "M"
+                world(creature.x + 1, creature.y) = "M"
+                world(creature.x, creature.y + 1) = "M"
+                world(creature.x + 1, creature.y + 1) = "M"
+            Next
+        End If
         'Draw World
         For x As Integer = playerX - 40 To playerX + 40
             For y As Integer = playerY - 40 To playerY + 40
@@ -83,6 +86,8 @@ Module Module1
         Next
         Console.WriteLine(data)
         Console.WriteLine("╔════════════════════╗")
+        Console.WriteLine("║ HP: " & health)
+        Console.WriteLine("╠════════════════════╣")
         Console.WriteLine("║Iron:" & iron)
         Console.WriteLine("║Copper: " & copper)
         Console.WriteLine("║Wood:" & wood)
@@ -96,6 +101,11 @@ Module Module1
         Console.CursorTop = 0
     End Sub
     Sub TakeTurn()
+        If health < 1 Then
+            health = 10
+            playerY = 1025
+            playerX = 1025
+        End If
         Dim key As Char = Console.ReadKey.KeyChar
         Select Case key
             Case Is = "a"
@@ -262,7 +272,9 @@ a:
         '''''Main Loop
         Render()
         TakeTurn()
-        Zombify()
+        If level Then
+            Zombify()
+        End If
         If Not level Then
             tile = tileU
         Else
@@ -295,9 +307,18 @@ a:
             If playerY > creature.y Then
                 bestY += 2
             End If
-            If tile((creature.x + bestX) / 2, (creature.y + bestY) / 2) = " " Or tile((creature.x + bestX) / 2, (creature.y + bestY) / 2) = "%" Then
-                creature.x += bestX
+
+            If Math.Abs(playerY - creature.y) < 2 And Math.Abs(playerX - creature.x) < 2 Then
+                remove.Add(creature)
+                health -= 1
+                Console.Beep()
+            End If
+
+            If tile((creature.x) / 2, (creature.y + bestY) / 2) = " " Or tile((creature.x) / 2, (creature.y + bestY) / 2) = spawnerT Then
                 creature.y += bestY
+            End If
+            If tile((creature.x + bestX) / 2, (creature.y) / 2) = " " Or tile((creature.x) / 2, (creature.y + bestY) / 2) = spawnerT Then
+                creature.x += bestX
             End If
             ''''Ai End
             creature.life += 1
@@ -308,7 +329,7 @@ a:
         For Each creature As entitiy In remove
             entities.Remove(creature)
         Next
-        If Int((10 * Rnd()) + 1) = "1" Then
+        If Int((40 * Rnd()) + 1) = "1" Then
             For x As Integer = (playerX / 2) - 40 To (playerX / 2) + 40
                 For y As Integer = (playerY / 2) - 40 To (playerY / 2) + 40
                     If tile(x, y) = spawnerT Then
@@ -509,19 +530,16 @@ a:
                         If Int((3 * Rnd()) + 1) <> "1" Then
                             ay -= 1
                         End If
+
+                        If Int((30 * Rnd()) + 1) = "1" Then
+                            tileO(x, y) = spawnerT
+                        End If
+
                     End While
                 End If
             Next
         Next
 
-        'Spawner
-        For x As Integer = 0 To 900
-            For y As Integer = 0 To 900
-                If Int((500 * Rnd()) + 1) = "1" Then
-                    tileO(x, y) = spawnerT
-                End If
-            Next
-        Next
         'House
         For ax As Integer = 0 To 9
             For ay As Integer = 0 To 9
