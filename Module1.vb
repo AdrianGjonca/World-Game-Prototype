@@ -226,7 +226,13 @@ Module Module1
                 For Each creature As entitiy In entities
                     If creature.x > playerX - 3 And creature.x < playerX + 3 Then
                         If creature.y > playerY - 4 And creature.y < playerY + 3 Then
-                            remove.Add(creature)
+                            If Int((3 * Rnd()) + 1) <> "1" Then
+                                remove.Add(creature)
+                                stone += Int((3 * Rnd()) + 1)
+                                iron += Int((2 * Rnd()) + 0)
+                                copper += Int((2 * Rnd()) + 0)
+                                wood += Int((4 * Rnd()) + 1)
+                            End If
                         End If
                     End If
                 Next
