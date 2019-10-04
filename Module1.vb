@@ -18,6 +18,8 @@ Module Module1
         Public life As Integer = 0
     End Class
 
+    Dim entitiesO As List(Of entitiy) = New List(Of entitiy)
+    Dim entitiesU As List(Of entitiy) = New List(Of entitiy)
     Dim entities As List(Of entitiy) = New List(Of entitiy)
 
     Dim level As Boolean = True
@@ -47,14 +49,13 @@ Module Module1
             Next
         Next
 
-        If level Then
-            For Each creature As entitiy In entities
-                world(creature.x, creature.y) = "M"
-                world(creature.x + 1, creature.y) = "M"
-                world(creature.x, creature.y + 1) = "M"
-                world(creature.x + 1, creature.y + 1) = "M"
-            Next
-        End If
+        For Each creature As entitiy In entities
+            world(creature.x, creature.y) = "M"
+            world(creature.x + 1, creature.y) = "M"
+            world(creature.x, creature.y + 1) = "M"
+            world(creature.x + 1, creature.y + 1) = "M"
+        Next
+
         'Draw World
         For x As Integer = playerX - 40 To playerX + 40
             For y As Integer = playerY - 40 To playerY + 40
@@ -220,6 +221,18 @@ Module Module1
                     End If
                     tile((playerX - 1) / 2, (playerY - 1) / 2 - 1) = " "
                 End If
+            Case Is = "q"
+                Dim remove As List(Of entitiy) = New List(Of entitiy)
+                For Each creature As entitiy In entities
+                    If creature.x > playerX - 3 And creature.x < playerX + 3 Then
+                        If creature.y > playerY - 3 And creature.y < playerY + 3 Then
+                            remove.Add(creature)
+                        End If
+                    End If
+                Next
+                For Each creature As entitiy In remove
+                    entities.Remove(creature)
+                Next
             Case Is = "e"
                 level = Not level
         End Select
@@ -272,19 +285,22 @@ a:
         '''''Main Loop
         Render()
         TakeTurn()
-        If level Then
-            Zombify()
-        End If
+        Zombify()
         If Not level Then
             tile = tileU
+            entities = entitiesU
         Else
             tile = tileO
+            entities = entitiesO
         End If
         If Not level Then
             tileU = tile
+            entitiesU = entities
         Else
             tileO = tile
+            entitiesO = entities
         End If
+
         ''''''End of Main loop
         GoTo a
     End Sub
@@ -394,6 +410,10 @@ a:
                         End If
                         If Int((3 * Rnd()) + 1) <> "1" Then
                             ay -= 1
+                        End If
+
+                        If Int((20 * Rnd()) + 1) = "1" Then
+                            tileU(x, y) = spawnerT
                         End If
                     End While
                 End If
