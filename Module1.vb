@@ -147,15 +147,15 @@ Module Module1
                     tile((playerX - 1) / 2, (playerY - 1) / 2) = copperT
                     copper -= 1
                 End If '▒
-            Case Is = "+"
+            Case Is = "]"
                 If stone > 0 Then
                     tile((playerX - 1) / 2, (playerY - 1) / 2) = "▒"
                     stone -= 1
                 End If
-            Case Is = "-"
+            Case Is = "#"
                 If wood > 0 Then
                     tile((playerX - 1) / 2, (playerY - 1) / 2) = woodT
-                    stone -= 1
+                    wood -= 1
                 End If
             Case Is = "j"
                 If tile((playerX - 1) / 2 - 1, (playerY - 1) / 2) <> "█" Then
@@ -225,7 +225,7 @@ Module Module1
                 Dim remove As List(Of entitiy) = New List(Of entitiy)
                 For Each creature As entitiy In entities
                     If creature.x > playerX - 3 And creature.x < playerX + 3 Then
-                        If creature.y > playerY - 3 And creature.y < playerY + 3 Then
+                        If creature.y > playerY - 4 And creature.y < playerY + 3 Then
                             remove.Add(creature)
                         End If
                     End If
