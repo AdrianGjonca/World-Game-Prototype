@@ -234,7 +234,7 @@ Module Module1
                                 wood += Int((4 * Rnd()) + 1)
                             End If
                         End If
-                        End If
+                    End If
                 Next
                 For Each creature As entitiy In remove
                     entities.Remove(creature)
@@ -337,11 +337,27 @@ a:
             End If
 
             If tile((creature.x) / 2, (creature.y + bestY) / 2) = " " Or tile((creature.x) / 2, (creature.y + bestY) / 2) = spawnerT Then
+                For Each thing As entitiy In entities
+                    If creature.y + bestY = thing.y Then
+                        If creature.x = thing.x Then
+                            GoTo leave
+                        End If
+                    End If
+                Next
                 creature.y += bestY
             End If
+leave:
             If tile((creature.x + bestX) / 2, (creature.y) / 2) = " " Or tile((creature.x) / 2, (creature.y + bestY) / 2) = spawnerT Then
+                For Each thing As entitiy In entities
+                    If creature.y = thing.y Then
+                        If creature.x + bestX = thing.x Then
+                            GoTo leave2
+                        End If
+                    End If
+                Next
                 creature.x += bestX
             End If
+leave2:
             ''''Ai End
             creature.life += 1
             If creature.life > 500 Then
