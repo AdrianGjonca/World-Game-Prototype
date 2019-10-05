@@ -12,6 +12,7 @@ Module Module1
     Dim tile(1024, 1024) As Char
     Dim world(2048, 2048) As Char
 
+    Dim handy As Boolean = True
     Public Class entitiy
         Public x As Integer
         Public y As Integer
@@ -50,10 +51,10 @@ Module Module1
         Next
 
         For Each creature As entitiy In entities
-            world(creature.x, creature.y) = "M"
-            world(creature.x + 1, creature.y) = "M"
-            world(creature.x, creature.y + 1) = "M"
-            world(creature.x + 1, creature.y + 1) = "M"
+            world(creature.x, creature.y) = "║"
+            world(creature.x + 1, creature.y) = " "
+            world(creature.x, creature.y + 1) = "☻"
+            world(creature.x + 1, creature.y + 1) = "*"
         Next
 
         'Draw World
@@ -71,10 +72,19 @@ Module Module1
         'Draw Player
         '¶⁋
         '<>
-        screen(19, 20) = "☺"
-        screen(20, 20) = "%"
-        screen(19, 21) = "║"
-        screen(20, 21) = " "
+
+        If handy Then
+            screen(19, 20) = "☺"
+            screen(20, 20) = " "
+            screen(19, 21) = "║"
+            screen(20, 21) = "\"
+        Else
+            screen(19, 20) = "☺"
+            screen(20, 20) = "/"
+            screen(19, 21) = "║"
+            screen(20, 21) = " "
+        End If
+
 
         'Draw Screen
         Dim data As String = ""
@@ -173,6 +183,7 @@ Module Module1
                     End If
                     tile((playerX - 1) / 2 - 1, (playerY - 1) / 2) = " "
                 End If
+                handy = Not handy
             Case Is = "l"
                 If tile((playerX - 1) / 2 + 1, (playerY - 1) / 2) <> "█" Then
                     If tile((playerX - 1) / 2 + 1, (playerY - 1) / 2) = ironT Then
@@ -189,6 +200,7 @@ Module Module1
                     End If
                     tile((playerX - 1) / 2 + 1, (playerY - 1) / 2) = " "
                 End If
+                handy = Not handy
             Case Is = "i"
                 If tile((playerX - 1) / 2, (playerY - 1) / 2 + 1) <> "█" Then
                     If tile((playerX - 1) / 2, (playerY - 1) / 2 + 1) = ironT Then
@@ -205,6 +217,7 @@ Module Module1
                     End If
                     tile((playerX - 1) / 2, (playerY - 1) / 2 + 1) = " "
                 End If
+                handy = Not handy
             Case Is = "k"
                 If tile((playerX - 1) / 2, (playerY - 1) / 2 - 1) <> "█" Then
                     If tile((playerX - 1) / 2, (playerY - 1) / 2 - 1) = ironT Then
@@ -221,24 +234,26 @@ Module Module1
                     End If
                     tile((playerX - 1) / 2, (playerY - 1) / 2 - 1) = " "
                 End If
+                handy = Not handy
             Case Is = "q"
                 Dim remove As List(Of entitiy) = New List(Of entitiy)
                 For Each creature As entitiy In entities
                     If creature.x > playerX - 2 And creature.x < playerX + 2 Then
                         If creature.y > playerY - 5 And creature.y < playerY + 3 Then
-                            If Int((3 * Rnd()) + 1) <> "1" Then
-                                remove.Add(creature)
-                                stone += Int((3 * Rnd()) + 1)
-                                iron += Int((2 * Rnd()) + 0)
-                                copper += Int((2 * Rnd()) + 0)
-                                wood += Int((4 * Rnd()) + 1)
-                            End If
+                            'If Int((3 * Rnd()) + 1) <> "1" Then
+                            remove.Add(creature)
+                            stone += Int((3 * Rnd()) + 1)
+                            iron += Int((2 * Rnd()) + 0)
+                            copper += Int((2 * Rnd()) + 0)
+                            wood += Int((4 * Rnd()) + 1)
+                            'End If
                         End If
                     End If
                 Next
                 For Each creature As entitiy In remove
                     entities.Remove(creature)
                 Next
+                handy = Not handy
             Case Is = "e"
                 level = Not level
         End Select
