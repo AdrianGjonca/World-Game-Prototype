@@ -224,8 +224,8 @@ Module Module1
             Case Is = "q"
                 Dim remove As List(Of entitiy) = New List(Of entitiy)
                 For Each creature As entitiy In entities
-                    If creature.x > playerX - 3 And creature.x < playerX + 3 Then
-                        If creature.y > playerY - 4 And creature.y < playerY + 3 Then
+                    If creature.x > playerX - 2 And creature.x < playerX + 2 Then
+                        If creature.y > playerY - 5 And creature.y < playerY + 3 Then
                             If Int((3 * Rnd()) + 1) <> "1" Then
                                 remove.Add(creature)
                                 stone += Int((3 * Rnd()) + 1)
@@ -234,7 +234,7 @@ Module Module1
                                 wood += Int((4 * Rnd()) + 1)
                             End If
                         End If
-                    End If
+                        End If
                 Next
                 For Each creature As entitiy In remove
                     entities.Remove(creature)
