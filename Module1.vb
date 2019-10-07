@@ -168,6 +168,7 @@ Module Module1
                     wood -= 1
                 End If
             Case Is = "j"
+                Attack("j")
                 If tile((playerX - 1) / 2 - 1, (playerY - 1) / 2) <> "█" Then
                     If tile((playerX - 1) / 2 - 1, (playerY - 1) / 2) = ironT Then
                         iron += 1
@@ -185,6 +186,7 @@ Module Module1
                 End If
                 handy = Not handy
             Case Is = "l"
+                Attack("l")
                 If tile((playerX - 1) / 2 + 1, (playerY - 1) / 2) <> "█" Then
                     If tile((playerX - 1) / 2 + 1, (playerY - 1) / 2) = ironT Then
                         iron += 1
@@ -202,6 +204,7 @@ Module Module1
                 End If
                 handy = Not handy
             Case Is = "i"
+                Attack("i")
                 If tile((playerX - 1) / 2, (playerY - 1) / 2 + 1) <> "█" Then
                     If tile((playerX - 1) / 2, (playerY - 1) / 2 + 1) = ironT Then
                         iron += 1
@@ -219,6 +222,7 @@ Module Module1
                 End If
                 handy = Not handy
             Case Is = "k"
+                Attack("k")
                 If tile((playerX - 1) / 2, (playerY - 1) / 2 - 1) <> "█" Then
                     If tile((playerX - 1) / 2, (playerY - 1) / 2 - 1) = ironT Then
                         iron += 1
@@ -236,27 +240,45 @@ Module Module1
                 End If
                 handy = Not handy
             Case Is = "q"
-                Dim remove As List(Of entitiy) = New List(Of entitiy)
-                For Each creature As entitiy In entities
-                    If creature.x > playerX - 2 And creature.x < playerX + 2 Then
-                        If creature.y > playerY - 5 And creature.y < playerY + 3 Then
-                            'If Int((3 * Rnd()) + 1) <> "1" Then
-                            remove.Add(creature)
-                            stone += Int((3 * Rnd()) + 1)
-                            iron += Int((2 * Rnd()) + 0)
-                            copper += Int((2 * Rnd()) + 0)
-                            wood += Int((4 * Rnd()) + 1)
-                            'End If
-                        End If
-                    End If
-                Next
-                For Each creature As entitiy In remove
-                    entities.Remove(creature)
-                Next
+
                 handy = Not handy
             Case Is = "e"
                 level = Not level
         End Select
+    End Sub
+    Sub Attack(direction As Char)
+        Dim x1, x2, y1, y2 As Integer
+        Select Case direction
+            Case Is = "i"
+                x1 = -2
+                x2 = 1
+                y1 = 0
+                y2 = 3
+            Case Is = "j"
+            Case Is = "k"
+                x1 = -2
+                x2 = 1
+                y1 = -3
+                y2 = 0
+            Case Is = "l"
+        End Select
+        Dim remove As List(Of entitiy) = New List(Of entitiy)
+        For Each creature As entitiy In entities
+            If creature.x > playerX + x1 And creature.x < playerX + x2 Then
+                If creature.y > playerY + y1 And creature.y < playerY + y2 Then
+                    'If Int((3 * Rnd()) + 1) <> "1" Then
+                    remove.Add(creature)
+                    stone += Int((3 * Rnd()) + 1)
+                    iron += Int((2 * Rnd()) + 0)
+                    copper += Int((2 * Rnd()) + 0)
+                    wood += Int((4 * Rnd()) + 1)
+                    'End If
+                End If
+            End If
+        Next
+        For Each creature As entitiy In remove
+            entities.Remove(creature)
+        Next
     End Sub
     Sub Main()
 b:
