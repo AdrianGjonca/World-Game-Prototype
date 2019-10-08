@@ -246,21 +246,29 @@ Module Module1
                 level = Not level
         End Select
     End Sub
-    Sub Attack(direction As Char)
+    Sub Attack(ByVal direction As Char)
         Dim x1, x2, y1, y2 As Integer
         Select Case direction
             Case Is = "i"
-                x1 = -2
-                x2 = 1
+                x1 = -4
+                x2 = 2
                 y1 = 0
                 y2 = 3
             Case Is = "j"
+                x1 = -4
+                x2 = -2
+                y1 = -4
+                y2 = 2
             Case Is = "k"
-                x1 = -2
-                x2 = 1
-                y1 = -3
-                y2 = 0
+                x1 = -4
+                x2 = 2
+                y1 = -5
+                y2 = -2
             Case Is = "l"
+                x1 = 0
+                x2 = 4
+                y1 = -4
+                y2 = 2
         End Select
         Dim remove As List(Of entitiy) = New List(Of entitiy)
         For Each creature As entitiy In entities
