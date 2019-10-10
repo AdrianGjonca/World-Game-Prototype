@@ -266,7 +266,7 @@ Module Module1
                 y2 = -2
             Case Is = "l"
                 x1 = 0
-                x2 = 4
+                x2 = 3
                 y1 = -4
                 y2 = 2
         End Select
@@ -274,13 +274,19 @@ Module Module1
         For Each creature As entitiy In entities
             If creature.x > playerX + x1 And creature.x < playerX + x2 Then
                 If creature.y > playerY + y1 And creature.y < playerY + y2 Then
-                    'If Int((3 * Rnd()) + 1) <> "1" Then
                     remove.Add(creature)
-                    stone += Int((3 * Rnd()) + 1)
-                    iron += Int((2 * Rnd()) + 0)
-                    copper += Int((2 * Rnd()) + 0)
-                    wood += Int((4 * Rnd()) + 1)
-                    'End If
+                    If Int((3 * Rnd()) + 1) = "1" Then
+                        wood += 1
+                    End If
+                    If Int((4 * Rnd()) + 1) = "1" Then
+                        stone += 1
+                    End If
+                    If Int((12 * Rnd()) + 1) = "1" Then
+                        copper += 1
+                    End If
+                    If Int((15 * Rnd()) + 1) = "1" Then
+                        iron += 1
+                    End If
                 End If
             End If
         Next
@@ -412,7 +418,7 @@ leave2:
         For Each creature As entitiy In remove
             entities.Remove(creature)
         Next
-        If Int((40 * Rnd()) + 1) = "1" Then
+        If Int((20 * Rnd()) + 1) = "1" Then
             For x As Integer = (playerX / 2) - 40 To (playerX / 2) + 40
                 For y As Integer = (playerY / 2) - 40 To (playerY / 2) + 40
                     If tile(x, y) = spawnerT Then
