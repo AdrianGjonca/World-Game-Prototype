@@ -7,10 +7,10 @@ Module Module1
     Dim wood As Integer = 0
     Dim stone As Integer = 0
     Dim screen(40, 40) As Char
-    Dim tileU(1024, 1024) As Char
-    Dim tileO(1024, 1024) As Char
-    Dim tile(1024, 1024) As Char
-    Dim world(2048, 2048) As Char
+    Dim tileU(5000, 5000) As Char
+    Dim tileO(5000, 5000) As Char
+    Dim tile(5000, 5000) As Char
+    Dim world(10000, 10000) As Char
 
     Dim handy As Boolean = True
     Public Class entitiy
@@ -41,8 +41,8 @@ Module Module1
         Next
 
         'Process World
-        For x As Integer = 0 To 1023
-            For y As Integer = 0 To 1023
+        For x As Integer = playerX / 2 - 100 To playerX / 2 + 100
+            For y As Integer = playerY / 2 - 100 To playerY / 2 + 100
                 world(x * 2, y * 2) = tile(x, y)
                 world(x * 2 + 1, y * 2) = tile(x, y)
                 world(x * 2, y * 2 + 1) = tile(x, y)
@@ -107,15 +107,15 @@ Module Module1
         Console.WriteLine("║1: door  ╬  C:5 I:6 ║")
         Console.WriteLine("║2: table ╥  C:5 I:4 ║")
         Console.WriteLine("╚════════════════════╝")
-        'Console.WriteLine(playerX & " " & playerY)
+        Console.WriteLine(playerX & " " & playerY)
         Console.CursorLeft = 0
         Console.CursorTop = 0
     End Sub
     Sub TakeTurn()
         If health < 1 Then
             health = 10
-            playerY = 1025
-            playerX = 1025
+            playerY = 5009
+            playerX = 5009
         End If
         Dim key As Char = Console.ReadKey.KeyChar
         Select Case key
@@ -336,8 +336,8 @@ c:
         WorldGen()
         'entities.Add(New entitiy)
         tile = tileU
-        playerY = 1025
-        playerX = 1025
+        playerY = 5009
+        playerX = 5009
 a:
         '''''Main Loop
         Render()
@@ -433,69 +433,60 @@ leave2:
     End Sub
 
     Sub WorldGen()
-
+        Console.Clear()
+        Console.WriteLine("---Generating New World---")
 
 
         ''''''Caves
-        For x As Integer = 0 To 1024
-            For y As Integer = 0 To 1024
-                tileU(x, y) = " "
-            Next
-        Next
-        'Stone
-        For x As Integer = 10 To 1000 Step 1
-            For y As Integer = 10 To 1000 Step 1
-                'If Int((2 * Rnd()) + 1) = "1" Then
+        Console.WriteLine("---Underground---")
+        Console.WriteLine("Filling in stone...")
+        For x As Integer = 0 To 5000
+            For y As Integer = 0 To 5000
                 tileU(x, y) = "▒"
-                'End If
             Next
         Next
 
+        Console.WriteLine("Generating cave systems...")
         'Caves
-        For x As Integer = 100 To 900 Step 1
-            For y As Integer = 100 To 900 Step 1
-                If Int((50 * Rnd()) + 1) = "1" Then
+        For x As Integer = 100 To 4900 Step 1
+            For y As Integer = 100 To 4900 Step 1
+                If Int((60 * Rnd()) + 1) = "1" Then
                     Dim ax = 0
                     Dim ay = 0
-                    While Int((8 * Rnd()) + 1) <> "1"
+                    While Int((7 * Rnd()) + 1) <> "1"
                         tileU(x + ax, y + ay) = " "
-                        If Int((3 * Rnd()) + 1) <> "1" Then
-                            tileU(x + ax + 1, y + ay) = " "
-                        End If
-                        If Int((3 * Rnd()) + 1) <> "1" Then
-                            tileU(x + ax - 1, y + ay) = " "
-                        End If
-                        If Int((3 * Rnd()) + 1) <> "1" Then
-                            tileU(x + ax, y + ay + 1) = " "
-                        End If
-                        If Int((3 * Rnd()) + 1) <> "1" Then
-                            tileU(x + ax, y + ay - 1) = " "
-                        End If
+                        tileU(x + ax + 1, y + ay) = " "
+                        tileU(x + ax - 1, y + ay) = " "
+                        tileU(x + ax, y + ay + 1) = " "
+                        tileU(x + ax, y + ay - 1) = " "
 
-                        If Int((3 * Rnd()) + 1) <> "1" Then
-                            ax += 1
-                        End If
-                        If Int((3 * Rnd()) + 1) <> "1" Then
-                            ax -= 1
-                        End If
-                        If Int((3 * Rnd()) + 1) <> "1" Then
-                            ay += 1
-                        End If
-                        If Int((3 * Rnd()) + 1) <> "1" Then
-                            ay -= 1
-                        End If
+                        Select Case Int((2 * Rnd()) + 1)
+                            Case Is = "1"
+                                ax += 1
+                            Case Else
+                                ax -= 1
+                        End Select
+                        Select Case Int((2 * Rnd()) + 1)
+                            Case Is = "1"
+                                ay += 1
+                            Case Else
+                                ay -= 1
+                        End Select
 
                         If Int((20 * Rnd()) + 1) = "1" Then
                             tileU(x, y) = spawnerT
                         End If
+
                     End While
                 End If
             Next
         Next
 
+        Console.WriteLine("Planting ores:")
+        Console.WriteLine("of iron...")
         'Ores
-        For x As Integer = 100 To 900 Step 1
-            For y As Integer = 100 To 900 Step 1
+        For x As Integer = 100 To 4900 Step 1
+            For y As Integer = 100 To 4900 Step 1
                 If Int((800 * Rnd()) + 1) = "3" Then
                     Dim ax = 0
                     Dim ay = 0
@@ -514,24 +505,25 @@ leave2:
                             tileU(x + ax, y + ay - 1) = ironT
                         End If
 
-                        If Int((3 * Rnd()) + 1) <> "1" Then
-                            ax += 1
-                        End If
-                        If Int((3 * Rnd()) + 1) <> "1" Then
-                            ax -= 1
-                        End If
-                        If Int((3 * Rnd()) + 1) <> "1" Then
-                            ay += 1
-                        End If
-                        If Int((3 * Rnd()) + 1) <> "1" Then
-                            ay -= 1
-                        End If
+                        Select Case Int((2 * Rnd()) + 1)
+                            Case Is = "1"
+                                ax += 1
+                            Case Else
+                                ax -= 1
+                        End Select
+                        Select Case Int((2 * Rnd()) + 1)
+                            Case Is = "1"
+                                ay += 1
+                            Case Else
+                                ay -= 1
+                        End Select
                     End While
                 End If
             Next
         Next
-        For x As Integer = 100 To 900 Step 1
-            For y As Integer = 100 To 900 Step 1
+        Console.WriteLine("of copper...")
+        For x As Integer = 100 To 4900 Step 1
+            For y As Integer = 100 To 4900 Step 1
                 If Int((800 * Rnd()) + 1) = "3" Then
                     Dim ax = 0
                     Dim ay = 0
@@ -550,33 +542,34 @@ leave2:
                             tileU(x + ax, y + ay - 1) = copperT
                         End If
 
-                        If Int((3 * Rnd()) + 1) <> "1" Then
-                            ax += 1
-                        End If
-                        If Int((3 * Rnd()) + 1) <> "1" Then
-                            ax -= 1
-                        End If
-                        If Int((3 * Rnd()) + 1) <> "1" Then
-                            ay += 1
-                        End If
-                        If Int((3 * Rnd()) + 1) <> "1" Then
-                            ay -= 1
-                        End If
+                        Select Case Int((2 * Rnd()) + 1)
+                            Case Is = "1"
+                                ax += 1
+                            Case Else
+                                ax -= 1
+                        End Select
+                        Select Case Int((2 * Rnd()) + 1)
+                            Case Is = "1"
+                                ay += 1
+                            Case Else
+                                ay -= 1
+                        End Select
                     End While
                 End If
             Next
         Next
 
+        Console.WriteLine("Building house...")
         'House
         For ax As Integer = 0 To 9
             For ay As Integer = 0 To 9
-                tileU(508 + ax, 508 + ay) = " "
+                tileU(2500 + ax, 2500 + ay) = " "
                 If ax = 0 Or ax = 9 Then
-                    tileU(508 + ax, 508 + ay) = "▓"
+                    tileU(2500 + ax, 2500 + ay) = "▓"
                 ElseIf ay = 0 And ax <> 5 And ax <> 4 Then
-                    tileU(508 + ax, 508 + ay) = "▓"
+                    tileU(2500 + ax, 2500 + ay) = "▓"
                 ElseIf ay = 9 Then
-                    tileU(508 + ax, 508 + ay) = "▓"
+                    tileU(2500 + ax, 2500 + ay) = "▓"
                 End If
             Next
         Next
@@ -585,45 +578,54 @@ leave2:
 
 
         ''''''World
-        For x As Integer = 0 To 1024
-            For y As Integer = 0 To 1024
+        Console.WriteLine("---Underground---")
+        Console.WriteLine("Planting trees...")
+        For x As Integer = 0 To 5000
+            For y As Integer = 0 To 5000
                 tileO(x, y) = woodT
             Next
         Next
+        Console.WriteLine("Deforestation...")
         'Clearings
-        For x As Integer = 100 To 900 Step 1
-            For y As Integer = 100 To 900 Step 1
-                If Int((50 * Rnd()) + 1) = "1" Then
+
+        For x As Integer = 100 To 4900 Step 1
+            For y As Integer = 100 To 4900 Step 1
+                If Int((120 * Rnd()) + 1) = "1" Then
                     Dim ax = 0
                     Dim ay = 0
                     While Int((20 * Rnd()) + 1) <> "1"
                         tileO(x + ax, y + ay) = " "
-                        If Int((3 * Rnd()) + 1) <> "1" Then
-                            tileO(x + ax + 1, y + ay) = " "
-                        End If
-                        If Int((3 * Rnd()) + 1) <> "1" Then
-                            tileO(x + ax - 1, y + ay) = " "
-                        End If
-                        If Int((3 * Rnd()) + 1) <> "1" Then
-                            tileO(x + ax, y + ay + 1) = " "
-                        End If
-                        If Int((3 * Rnd()) + 1) <> "1" Then
-                            tileO(x + ax, y + ay - 1) = " "
-                        End If
+                        tileO(x + ax + 1, y + ay) = " "
+                        tileO(x + ax - 1, y + ay) = " "
+                        tileO(x + ax, y + ay + 1) = " "
+                        tileO(x + ax, y + ay - 1) = " "
 
-                        If Int((3 * Rnd()) + 1) <> "1" Then
-                            ax += 1
-                        End If
-                        If Int((3 * Rnd()) + 1) <> "1" Then
-                            ax -= 1
-                        End If
-                        If Int((3 * Rnd()) + 1) <> "1" Then
-                            ay += 1
-                        End If
-                        If Int((3 * Rnd()) + 1) <> "1" Then
-                            ay -= 1
-                        End If
+                        tileO(x + ax + 1, y + ay + 1) = " "
+                        tileO(x + ax - 1, y + ay + 1) = " "
+                        tileO(x + ax + 1, y + ay - 1) = " "
+                        tileO(x + ax - 1, y + ay - 1) = " "
 
+                        tileO(x + ax + 2, y + ay) = " "
+                        tileO(x + ax - 2, y + ay) = " "
+                        tileO(x + ax, y + ay + 2) = " "
+                        tileO(x + ax, y + ay - 2) = " "
+
+                        tileO(x + ax + 2, y + ay + 1) = " "
+                        tileO(x + ax - 2, y + ay - 1) = " "
+                        tileO(x + ax + 1, y + ay + 2) = " "
+                        tileO(x + ax - 1, y + ay - 2) = " "
+                        Select Case Int((2 * Rnd()) + 1)
+                            Case Is = "1"
+                                ax += 1
+                            Case Else
+                                ax -= 1
+                        End Select
+                        Select Case Int((2 * Rnd()) + 1)
+                            Case Is = "1"
+                                ay += 1
+                            Case Else
+                                ay -= 1
+                        End Select
                         If Int((30 * Rnd()) + 1) = "1" Then
                             tileO(x, y) = spawnerT
                         End If
@@ -633,18 +635,21 @@ leave2:
             Next
         Next
 
+        Console.WriteLine("House...")
         'House
         For ax As Integer = 0 To 9
             For ay As Integer = 0 To 9
-                tileO(508 + ax, 508 + ay) = " "
+                tileO(2500 + ax, 2500 + ay) = " "
                 If ax = 0 Or ax = 9 Then
-                    tileO(508 + ax, 508 + ay) = "▓"
+                    tileO(2500 + ax, 2500 + ay) = "▓"
                 ElseIf ay = 0 And ax <> 5 And ax <> 4 Then
-                    tileO(508 + ax, 508 + ay) = "▓"
+                    tileO(2500 + ax, 2500 + ay) = "▓"
                 ElseIf ay = 9 Then
-                    tileO(508 + ax, 508 + ay) = "▓"
+                    tileO(2500 + ax, 2500 + ay) = "▓"
                 End If
             Next
         Next
+        Console.WriteLine("---Finished---")
+        Console.ReadKey()
     End Sub
 End Module
