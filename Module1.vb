@@ -1,3 +1,20 @@
+Module Dungeons
+    Public AincientDungeon = New String(11, 9) {
+        {"░", "░", "░", "░", "░", "░", "░", "░", "░", "░"},
+        {"░", "♣", "♣", " ", "♣", "♣", " ", "♣", "♣", "░"},
+        {"░", "♣", " ", "▲", " ", " ", "▲", " ", "♣", "░"},
+        {"░", "♣", " ", " ", "♣", "♣", " ", " ", "♣", "░"},
+        {"░", " ", "▲", " ", "♣", "♣", " ", "▲", " ", "░"},
+        {"░", "♣", " ", " ", " ", "♣", "♣", " ", "♣", "░"},
+        {"░", "♣", " ", "▲", " ", "♣", " ", "▲", " ", "░"},
+        {"░", "♣", " ", " ", "♣", "♣", "♣", " ", "♣", "░"},
+        {"░", " ", "▲", " ", "♣", "♣", "♣", "♣", "♣", "░"},
+        {"░", "♣", " ", "♣", "♣", "♣", "♣", "♣", "♣", "░"},
+        {"░", "♣", "♣", "♣", "♣", "♣", "♣", "♣", "♣", "░"},
+        {"░", "░", "░", "░", "╬", "╬", "░", "░", "░", "░"}
+    }
+End Module
+
 Module Module1
     Dim playerX As Integer = 0
     Dim playerY As Integer = 0
@@ -111,6 +128,8 @@ Module Module1
         Console.CursorLeft = 0
         Console.CursorTop = 0
     End Sub
+
+    Dim walkthrough As Char() = {"╬", "~"}
     Sub TakeTurn()
         If health < 1 Then
             health = 10
@@ -120,19 +139,19 @@ Module Module1
         Dim key As Char = Console.ReadKey.KeyChar
         Select Case key
             Case Is = "a"
-                If world(playerX - 3, playerY) = " " Or world(playerX - 3, playerY) = "╬" Then
+                If world(playerX - 3, playerY) = " " Or walkthrough.Contains(world(playerX - 3, playerY)) Then
                     playerX -= 2
                 End If
             Case Is = "d"
-                If world(playerX + 2, playerY) = " " Or world(playerX + 2, playerY) = "╬" Then
+                If world(playerX + 2, playerY) = " " Or walkthrough.Contains(world(playerX + 2, playerY)) Then
                     playerX += 2
                 End If
             Case Is = "w"
-                If world(playerX, playerY + 2) = " " Or world(playerX, playerY + 2) = "╬" Then
+                If world(playerX, playerY + 2) = " " Or walkthrough.Contains(world(playerX, playerY + 2)) Then
                     playerY += 2
                 End If
             Case Is = "s"
-                If world(playerX, playerY - 3) = " " Or world(playerX, playerY - 3) = "╬" Then
+                If world(playerX, playerY - 3) = " " Or walkthrough.Contains(world(playerX, playerY - 3)) Then
                     playerY -= 2
                 End If
             Case Is = "1"
@@ -169,7 +188,7 @@ Module Module1
                 End If
             Case Is = "j"
                 Attack("j")
-                If tile((playerX - 1) / 2 - 1, (playerY - 1) / 2) <> "█" Then
+                If tile((playerX - 1) / 2 - 1, (playerY - 1) / 2) <> "~" Then
                     If tile((playerX - 1) / 2 - 1, (playerY - 1) / 2) = ironT Then
                         iron += 1
                     End If
@@ -187,7 +206,7 @@ Module Module1
                 handy = Not handy
             Case Is = "l"
                 Attack("l")
-                If tile((playerX - 1) / 2 + 1, (playerY - 1) / 2) <> "█" Then
+                If tile((playerX - 1) / 2 + 1, (playerY - 1) / 2) <> "~" Then
                     If tile((playerX - 1) / 2 + 1, (playerY - 1) / 2) = ironT Then
                         iron += 1
                     End If
@@ -205,7 +224,7 @@ Module Module1
                 handy = Not handy
             Case Is = "i"
                 Attack("i")
-                If tile((playerX - 1) / 2, (playerY - 1) / 2 + 1) <> "█" Then
+                If tile((playerX - 1) / 2, (playerY - 1) / 2 + 1) <> "~" Then
                     If tile((playerX - 1) / 2, (playerY - 1) / 2 + 1) = ironT Then
                         iron += 1
                     End If
@@ -223,7 +242,7 @@ Module Module1
                 handy = Not handy
             Case Is = "k"
                 Attack("k")
-                If tile((playerX - 1) / 2, (playerY - 1) / 2 - 1) <> "█" Then
+                If tile((playerX - 1) / 2, (playerY - 1) / 2 - 1) <> "~" Then
                     If tile((playerX - 1) / 2, (playerY - 1) / 2 - 1) = ironT Then
                         iron += 1
                     End If
@@ -338,6 +357,8 @@ c:
         tile = tileU
         playerY = 5009
         playerX = 5009
+        tile = tileO
+        entities = entitiesO
 a:
         '''''Main Loop
         Render()
@@ -448,8 +469,8 @@ leave2:
 
         Console.WriteLine("Generating cave systems...")
         'Caves
-        For x As Integer = 100 To 4900 Step 1
-            For y As Integer = 100 To 4900 Step 1
+        For x As Integer = 100 To 4900 Step 2
+            For y As Integer = 100 To 4900 Step 2
                 If Int((60 * Rnd()) + 1) = "1" Then
                     Dim ax = 0
                     Dim ay = 0
@@ -492,18 +513,18 @@ leave2:
                     Dim ay = 0
                     While Int((8 * Rnd()) + 1) <> "1"
                         tileU(x + ax, y + ay) = ironT
-                        If Int((3 * Rnd()) + 1) <> "1" Then
-                            tileU(x + ax + 1, y + ay) = ironT
-                        End If
-                        If Int((3 * Rnd()) + 1) <> "1" Then
-                            tileU(x + ax - 1, y + ay) = ironT
-                        End If
-                        If Int((3 * Rnd()) + 1) <> "1" Then
-                            tileU(x + ax, y + ay + 1) = ironT
-                        End If
-                        If Int((3 * Rnd()) + 1) <> "1" Then
-                            tileU(x + ax, y + ay - 1) = ironT
-                        End If
+                        Select Case Int((2 * Rnd()) + 1)
+                            Case Is = "1"
+                                tileU(x + ax + 1, y + ay) = ironT
+                            Case Else
+                                tileU(x + ax - 1, y + ay) = ironT
+                        End Select
+                        Select Case Int((2 * Rnd()) + 1)
+                            Case Is = "1"
+                                tileU(x + ax, y + ay + 1) = ironT
+                            Case Else
+                                tileU(x + ax, y + ay - 1) = ironT
+                        End Select
 
                         Select Case Int((2 * Rnd()) + 1)
                             Case Is = "1"
@@ -529,19 +550,18 @@ leave2:
                     Dim ay = 0
                     While Int((8 * Rnd()) + 1) <> "1"
                         tileU(x + ax, y + ay) = copperT
-                        If Int((3 * Rnd()) + 1) <> "1" Then
-                            tileU(x + ax + 1, y + ay) = copperT
-                        End If
-                        If Int((3 * Rnd()) + 1) <> "1" Then
-                            tileU(x + ax - 1, y + ay) = copperT
-                        End If
-                        If Int((3 * Rnd()) + 1) <> "1" Then
-                            tileU(x + ax, y + ay + 1) = copperT
-                        End If
-                        If Int((3 * Rnd()) + 1) <> "1" Then
-                            tileU(x + ax, y + ay - 1) = copperT
-                        End If
-
+                        Select Case Int((2 * Rnd()) + 1)
+                            Case Is = "1"
+                                tileU(x + ax + 1, y + ay) = copperT
+                            Case Else
+                                tileU(x + ax - 1, y + ay) = copperT
+                        End Select
+                        Select Case Int((2 * Rnd()) + 1)
+                            Case Is = "1"
+                                tileU(x + ax, y + ay + 1) = copperT
+                            Case Else
+                                tileU(x + ax, y + ay - 1) = copperT
+                        End Select
                         Select Case Int((2 * Rnd()) + 1)
                             Case Is = "1"
                                 ax += 1
@@ -585,12 +605,12 @@ leave2:
                 tileO(x, y) = woodT
             Next
         Next
-        Console.WriteLine("Deforestation...")
-        'Clearings
 
-        For x As Integer = 100 To 4900 Step 1
-            For y As Integer = 100 To 4900 Step 1
-                If Int((120 * Rnd()) + 1) = "1" Then
+        'Clearings
+        Console.WriteLine("Deforestation...")
+        For x As Integer = 100 To 4900 Step 2
+            For y As Integer = 100 To 4900 Step 2
+                If Int((30 * Rnd()) + 1) = "1" Then
                     Dim ax = 0
                     Dim ay = 0
                     While Int((20 * Rnd()) + 1) <> "1"
@@ -634,9 +654,67 @@ leave2:
                 End If
             Next
         Next
+        'Lakes
+        Console.WriteLine("Lakes...")
+        For x As Integer = 100 To 4900 Step 2
+            For y As Integer = 100 To 4900 Step 2
+                If Int((160 * Rnd()) + 1) = "1" Then
+                    Dim ax = 0
+                    Dim ay = 0
+                    While Int((9 * Rnd()) + 1) <> "1"
+                        tileO(x + ax, y + ay) = "~"
+                        tileO(x + ax + 1, y + ay) = "~"
+                        tileO(x + ax - 1, y + ay) = "~"
+                        tileO(x + ax, y + ay + 1) = "~"
+                        tileO(x + ax, y + ay - 1) = "~"
 
-        Console.WriteLine("House...")
+                        'tileO(x + ax + 1, y + ay + 1) = "~"
+                        'tileO(x + ax - 1, y + ay + 1) = "~"
+                        'tileO(x + ax + 1, y + ay - 1) = "~"
+                        'tileO(x + ax - 1, y + ay - 1) = "~"
+
+                        'tileO(x + ax + 2, y + ay) = "~"
+                        'tileO(x + ax - 2, y + ay) = "~"
+                        'tileO(x + ax, y + ay + 2) = "~"
+                        'tileO(x + ax, y + ay - 2) = "~"
+
+                        'tileO(x + ax + 2, y + ay + 1) = "~"
+                        'tileO(x + ax - 2, y + ay - 1) = "~"
+                        'tileO(x + ax + 1, y + ay + 2) = "~"
+                        'tileO(x + ax - 1, y + ay - 2) = "~"
+                        Select Case Int((2 * Rnd()) + 1)
+                            Case Is = "1"
+                                ax += 1
+                            Case Else
+                                ax -= 1
+                        End Select
+                        Select Case Int((2 * Rnd()) + 1)
+                            Case Is = "1"
+                                ay += 1
+                            Case Else
+                                ay -= 1
+                        End Select
+                    End While
+                End If
+            Next
+        Next
+
+
+
+        '''''Structures
+        Console.WriteLine("---Structures---")
+        Console.WriteLine("Aincient Temples of Zomb...")
+        For i As Integer = 0 To 5000
+            Dim sx As Integer = Int((4500 * Rnd()) + 100)
+            Dim sy As Integer = Int((4500 * Rnd()) + 100)
+            For ax As Integer = 0 To 11
+                For ay As Integer = 0 To 9
+                    tileO(sx + ay, sy + -ax) = Dungeons.AincientDungeon(ax, ay)
+                Next
+            Next
+        Next
         'House
+        Console.WriteLine("House...")
         For ax As Integer = 0 To 9
             For ay As Integer = 0 To 9
                 tileO(2500 + ax, 2500 + ay) = " "
