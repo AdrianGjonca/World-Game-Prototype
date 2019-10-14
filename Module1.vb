@@ -263,6 +263,8 @@ Module Module1
                 handy = Not handy
             Case Is = "e"
                 level = Not level
+            Case Is = "m"
+                Save()
         End Select
     End Sub
     Sub Attack(ByVal direction As Char)
@@ -731,5 +733,44 @@ leave2:
         Next
         Console.WriteLine("---Finished---")
         Console.ReadKey()
+    End Sub
+
+    Sub Save()
+        Dim Folder As String = My.Computer.FileSystem.SpecialDirectories.MyDocuments
+
+        My.Computer.FileSystem.WriteAllText(Folder & "\WORLD_GAME_DATA_OVERWORLD.WORLD", "", False)
+        My.Computer.FileSystem.WriteAllText(Folder & "\WORLD_GAME_DATA_UNDERWORLD.WORLD", "", False)
+        My.Computer.FileSystem.WriteAllText(Folder & "\WORLD_GAME_DATA_ENTITIES.ENTITIES", "", False)
+
+        Dim Data As String = ""
+
+        Console.CursorTop += 1
+        For x As Integer = 0 To 5000
+            Console.CursorLeft = 0
+            Console.WriteLine("Saving OVERWORLD " & (x / 50) & "%   ")
+            For y As Integer = 0 To 5000
+                Data &= tileO(x, y)
+            Next
+            My.Computer.FileSystem.WriteAllText(Folder & "\WORLD_GAME_DATA_OVERWORLD.WORLD", Data & vbCrLf, True)
+            Data = ""
+            Console.CursorTop -= 1
+        Next
+        Console.CursorTop += 1
+        For x As Integer = 0 To 5000
+            Console.CursorLeft = 0
+            Console.WriteLine("Saving UNDERWORLD " & (x / 50) & "%   ")
+            For y As Integer = 0 To 5000
+                Data &= tileU(x, y)
+            Next
+            My.Computer.FileSystem.WriteAllText(Folder & "\WORLD_GAME_DATA_UNDERWORLD.WORLD", Data & vbCrLf, True)
+            Data = ""
+            Console.CursorTop -= 1
+        Next
+        Console.CursorTop += 1
+        For Each zom In entities
+            Console.WriteLine("Saving ENTITIES")
+            My.Computer.FileSystem.WriteAllText(Folder & "\WORLD_GAME_DATA_ENTITIES.ENTITIES", zom.x & "," & zom.y & "," & zom.life & vbCrLf, True)
+            Console.CursorTop -= 1
+        Next
     End Sub
 End Module
