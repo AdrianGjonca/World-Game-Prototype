@@ -403,9 +403,11 @@ a:
             End If
 
             If Math.Abs(playerY - creature.y) < 2 And Math.Abs(playerX - creature.x) < 2 Then
-                remove.Add(creature)
-                health -= 1
-                Console.Beep()
+                If tile((playerX - 1) / 2, (playerY - 1) / 2) = " " Then
+                    remove.Add(creature)
+                    health -= 1
+                    Console.Beep()
+                End If
             End If
 
             If tile((creature.x) / 2, (creature.y + bestY) / 2) = " " Or tile((creature.x) / 2, (creature.y + bestY) / 2) = spawnerT Then
