@@ -1,3 +1,6 @@
+Imports System.IO
+Imports System.Runtime.Serialization.Formatters.Binary
+
 Module Dungeons
     Public AincientDungeon = New String(11, 9) {
         {"░", "░", "░", "░", "░", "░", "░", "░", "░", "░"},
@@ -116,10 +119,10 @@ Module Module1
         Console.WriteLine("╔════════════════════╗")
         Console.WriteLine("║ HP: " & health)
         Console.WriteLine("╠════════════════════╣")
-        Console.WriteLine("║Iron:" & iron)
+        Console.WriteLine("║Iron: " & iron)
         Console.WriteLine("║Copper: " & copper)
-        Console.WriteLine("║Wood:" & wood)
-        Console.WriteLine("║Stone:" & stone)
+        Console.WriteLine("║Wood: " & wood)
+        Console.WriteLine("║Stone: " & stone)
         Console.WriteLine("╠════════════════════╣")
         Console.WriteLine("║1: door  ╬  C:5 I:6 ║")
         Console.WriteLine("║2: table ╥  C:5 I:4 ║")
@@ -135,6 +138,10 @@ Module Module1
             health = 10
             playerY = 5009
             playerX = 5009
+            stone = 0
+            copper = 0
+            iron = 0
+            wood = 0
         End If
         Dim key As Char = Console.ReadKey.KeyChar
         Select Case key
@@ -327,8 +334,8 @@ b:
         Console.WriteLine("▓By Adrian Gjonca▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓")
         Console.WriteLine("▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓")
         Console.WriteLine("░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░")
-        Console.WriteLine("░1)Random Seed░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░")
-        Console.WriteLine("░2)Default Seed(Debug)░░░░░░░░░░░░░░░░░░░░░░")
+        Console.WriteLine("░1)Continue░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░")
+        Console.WriteLine("░2)New Game░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░")
         Console.WriteLine("░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░")
         Console.WriteLine("░3)Monochrome░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░")
         Console.WriteLine("░4)Red 'n Black░░░░░░░░░░░░░░░░░░░░░░░░░░░░░")
@@ -336,11 +343,14 @@ b:
         Console.WriteLine("░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░")
         Console.WriteLine("░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░")
         Dim input As Char = Console.ReadKey.KeyChar
-        Select Case input
+        Select Case input'Load()
             Case Is = "1"
                 Randomize()
+                Load()
                 GoTo c
             Case Is = "2"
+                Randomize()
+                WorldGen()
                 GoTo c
             Case Is = "3"
                 Console.ForegroundColor = ConsoleColor.Gray
@@ -354,7 +364,6 @@ b:
         End Select
         GoTo b
 c:
-        WorldGen()
         'entities.Add(New entitiy)
         tile = tileU
         playerY = 5009
@@ -478,7 +487,7 @@ leave2:
                 If Int((60 * Rnd()) + 1) = "1" Then
                     Dim ax = 0
                     Dim ay = 0
-                    While Int((7 * Rnd()) + 1) <> "1"
+                    While Int((10 * Rnd()) + 1) <> "1"
                         tileU(x + ax, y + ay) = " "
                         tileU(x + ax + 1, y + ay) = " "
                         tileU(x + ax - 1, y + ay) = " "
@@ -510,25 +519,17 @@ leave2:
         Console.WriteLine("Planting ores:")
         Console.WriteLine("of iron...")
         'Ores
-        For x As Integer = 100 To 4900 Step 1
-            For y As Integer = 100 To 4900 Step 1
-                If Int((800 * Rnd()) + 1) = "3" Then
+        For x As Integer = 100 To 4900 Step 2
+            For y As Integer = 100 To 4900 Step 2
+                If Int((60 * Rnd()) + 1) = "1" Then
                     Dim ax = 0
                     Dim ay = 0
-                    While Int((8 * Rnd()) + 1) <> "1"
+                    While Int((6 * Rnd()) + 1) <> "1"
                         tileU(x + ax, y + ay) = ironT
-                        Select Case Int((2 * Rnd()) + 1)
-                            Case Is = "1"
-                                tileU(x + ax + 1, y + ay) = ironT
-                            Case Else
-                                tileU(x + ax - 1, y + ay) = ironT
-                        End Select
-                        Select Case Int((2 * Rnd()) + 1)
-                            Case Is = "1"
-                                tileU(x + ax, y + ay + 1) = ironT
-                            Case Else
-                                tileU(x + ax, y + ay - 1) = ironT
-                        End Select
+                        tileU(x + ax + 1, y + ay) = ironT
+                        tileU(x + ax - 1, y + ay) = ironT
+                        tileU(x + ax, y + ay + 1) = ironT
+                        tileU(x + ax, y + ay - 1) = ironT
 
                         Select Case Int((2 * Rnd()) + 1)
                             Case Is = "1"
@@ -547,25 +548,18 @@ leave2:
             Next
         Next
         Console.WriteLine("of copper...")
-        For x As Integer = 100 To 4900 Step 1
-            For y As Integer = 100 To 4900 Step 1
-                If Int((800 * Rnd()) + 1) = "3" Then
+        For x As Integer = 100 To 4900 Step 2
+            For y As Integer = 100 To 4900 Step 2
+                If Int((60 * Rnd()) + 1) = "1" Then
                     Dim ax = 0
                     Dim ay = 0
-                    While Int((8 * Rnd()) + 1) <> "1"
+                    While Int((6 * Rnd()) + 1) <> "1"
                         tileU(x + ax, y + ay) = copperT
-                        Select Case Int((2 * Rnd()) + 1)
-                            Case Is = "1"
-                                tileU(x + ax + 1, y + ay) = copperT
-                            Case Else
-                                tileU(x + ax - 1, y + ay) = copperT
-                        End Select
-                        Select Case Int((2 * Rnd()) + 1)
-                            Case Is = "1"
-                                tileU(x + ax, y + ay + 1) = copperT
-                            Case Else
-                                tileU(x + ax, y + ay - 1) = copperT
-                        End Select
+                        tileU(x + ax + 1, y + ay) = copperT
+                        tileU(x + ax - 1, y + ay) = copperT
+                        tileU(x + ax, y + ay + 1) = copperT
+                        tileU(x + ax, y + ay - 1) = copperT
+
                         Select Case Int((2 * Rnd()) + 1)
                             Case Is = "1"
                                 ax += 1
@@ -737,40 +731,40 @@ leave2:
 
     Sub Save()
         Dim Folder As String = My.Computer.FileSystem.SpecialDirectories.MyDocuments
+        Dim format As New BinaryFormatter()
+        Dim over As String = Folder & "\World_Game_Over.dat"
+        Dim under As String = Folder & "\World_Game_Under.dat"
 
-        My.Computer.FileSystem.WriteAllText(Folder & "\WORLD_GAME_DATA_OVERWORLD.WORLD", "", False)
-        My.Computer.FileSystem.WriteAllText(Folder & "\WORLD_GAME_DATA_UNDERWORLD.WORLD", "", False)
-        My.Computer.FileSystem.WriteAllText(Folder & "\WORLD_GAME_DATA_ENTITIES.ENTITIES", "", False)
+        If File.Exists(over) Then File.Delete(over)
+        If File.Exists(under) Then File.Delete(under)
 
-        Dim Data As String = ""
+        Dim stream As FileStream = File.Create(over)
+        Console.WriteLine("Saving Overworld")
+        format.Serialize(stream, tileO)
+        stream.Close()
+        stream = File.Create(under)
+        Console.WriteLine("Saving Underworld")
+        format.Serialize(stream, tileU)
+        stream.Close()
+    End Sub
 
-        Console.CursorTop += 1
-        For x As Integer = 0 To 5000
-            Console.CursorLeft = 0
-            Console.WriteLine("Saving OVERWORLD " & (x / 50) & "%   ")
-            For y As Integer = 0 To 5000
-                Data &= tileO(x, y)
-            Next
-            My.Computer.FileSystem.WriteAllText(Folder & "\WORLD_GAME_DATA_OVERWORLD.WORLD", Data & vbCrLf, True)
-            Data = ""
-            Console.CursorTop -= 1
-        Next
-        Console.CursorTop += 1
-        For x As Integer = 0 To 5000
-            Console.CursorLeft = 0
-            Console.WriteLine("Saving UNDERWORLD " & (x / 50) & "%   ")
-            For y As Integer = 0 To 5000
-                Data &= tileU(x, y)
-            Next
-            My.Computer.FileSystem.WriteAllText(Folder & "\WORLD_GAME_DATA_UNDERWORLD.WORLD", Data & vbCrLf, True)
-            Data = ""
-            Console.CursorTop -= 1
-        Next
-        Console.CursorTop += 1
-        For Each zom In entities
-            Console.WriteLine("Saving ENTITIES")
-            My.Computer.FileSystem.WriteAllText(Folder & "\WORLD_GAME_DATA_ENTITIES.ENTITIES", zom.x & "," & zom.y & "," & zom.life & vbCrLf, True)
-            Console.CursorTop -= 1
-        Next
+    Sub Load()
+        Dim Folder As String = My.Computer.FileSystem.SpecialDirectories.MyDocuments
+        Dim format As New BinaryFormatter()
+
+        Dim over As String = Folder & "\World_Game_Over.dat"
+        Dim under As String = Folder & "\World_Game_Under.dat"
+
+        Dim stream As FileStream = File.OpenRead(over)
+
+        Console.WriteLine("Loading Overworld")
+        tileO = format.Deserialize(stream)
+        stream.Close()
+
+        stream = File.OpenRead(under)
+
+        Console.WriteLine("Loading Underworld")
+        tileU = format.Deserialize(stream)
+        stream.Close()
     End Sub
 End Module
